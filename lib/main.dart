@@ -1,122 +1,182 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:app_links/app_links.dart';
+import 'package:matrial_1123150086_uts/core/constants/app_strings.dart';
+import 'package:matrial_1123150086_uts/core/constants/app_constants.dart';
+import 'package:matrial_1123150086_uts/core/routes/app_router.dart';
+import 'package:matrial_1123150086_uts/core/services/secure_storage.dart';
+import 'package:matrial_1123150086_uts/core/services/dio_client.dart';
+import 'package:matrial_1123150086_uts/core/theme/app_theme.dart';
+import 'package:matrial_1123150086_uts/features/auth/presentation/providers/auth_provider.dart';
+import 'package:matrial_1123150086_uts/features/cart/presentation/providers/cart_provider.dart';
+import 'package:matrial_1123150086_uts/features/cart/presentation/providers/checkout_provider.dart';
+import 'package:matrial_1123150086_uts/features/cart/presentation/pages/payment_success_page.dart';
+import 'package:matrial_1123150086_uts/features/dashboard/presentation/providers/product_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:matrial_1123150086_uts/core/services/notification_service.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await NotificationService().init();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => CheckoutProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class _MyAppState extends State<MyApp> {
+  final _appLinks = AppLinks();
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initDeepLinkListener();
     });
   }
 
+  void _initDeepLinkListener() {
+    try {
+      _appLinks.uriLinkStream.listen(
+        (uri) {
+          debugPrint('[TokoMaterial] Deep link masuk: $uri');
+          if (uri.scheme == 'tokomaterial' && uri.host == 'callback') {
+            _handleCallback(uri);
+          }
+        },
+        onError: (e) {
+          debugPrint('[TokoMaterial] Error deep link stream: $e');
+        },
+      );
+    } catch (e) {
+      debugPrint('[TokoMaterial] Gagal mendaftarkan deep link listener: $e');
+    }
+  }
+
+  String? _lastProcessedKey;
+
+  Future<void> _handleCallback(Uri uri) async {
+    final status = uri.queryParameters['status'];
+    final reference = uri.queryParameters['reference'];
+
+    debugPrint(
+      '[TokoMaterial] Callback status: $status, reference: $reference',
+    );
+
+    if (reference == null ||
+        reference.isEmpty ||
+        status == null ||
+        status.isEmpty)
+      return;
+
+    final callbackKey = '${reference}_$status';
+
+    // Cegah pemrosesan ganda untuk kunci referensi + status yang sama dalam waktu singkat
+    if (_lastProcessedKey == callbackKey) {
+      debugPrint(
+        '[TokoMaterial] Kunci callback $callbackKey sudah diproses, diabaikan.',
+      );
+      return;
+    }
+    _lastProcessedKey = callbackKey;
+
+    // Bersihkan last processed setelah beberapa detik
+    Future.delayed(const Duration(seconds: 5), () {
+      if (_lastProcessedKey == callbackKey) {
+        _lastProcessedKey = null;
+      }
+    });
+
+    // TUNDA 600ms agar Flutter selesai memulihkan UI setelah resume dari background
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    if (status == 'success') {
+      try {
+        final response = await DioClient.instance.get(
+          '${AppConstants.baseUrl}/transactions/callback?status=success&reference=$reference',
+        );
+        debugPrint(
+          '[TokoMaterial] Callback backend response: ${response.statusCode}',
+        );
+      } catch (e) {
+        debugPrint('[TokoMaterial] Gagal update status ke backend: $e');
+      }
+
+      // Kirim Notifikasi Latar Belakang (System Notification)
+      NotificationService().showPaymentNotification(
+        title: 'Pembayaran Berhasil 🎉',
+        body: 'Transaksi $reference berhasil dibayar via Wallet Ku.',
+      );
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => PaymentSuccessPage(
+              onSuccess: () {
+                _navigatorKey.currentState?.popUntil((route) => route.isFirst);
+              },
+            ),
+          ),
+          (route) => route.isFirst,
+        );
+      });
+    } else {
+      final message = status == 'cancelled'
+          ? 'Pembayaran dibatalkan.'
+          : 'Pembayaran gagal. Silakan coba lagi.';
+
+      debugPrint('[TokoMaterial] Pembayaran status $status: $message');
+
+      // Kirim Notifikasi Latar Belakang (System Notification) - Silent (Hanya masuk drawer, tidak pop-up melayang)
+      NotificationService().showPaymentNotification(
+        title: status == 'cancelled'
+            ? 'Pembayaran Dibatalkan 🚫'
+            : 'Pembayaran Gagal ❌',
+        body: status == 'cancelled'
+            ? 'Pembayaran untuk transaksi $reference telah dibatalkan.'
+            : 'Transaksi $reference gagal diproses.',
+        isSilent: true,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+    return MaterialApp(
+      navigatorKey: _navigatorKey,
+      scaffoldMessengerKey: _scaffoldMessengerKey,
+      title: AppStrings.appName,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      initialRoute: AppRouter.splash,
+      routes: AppRouter.routes,
+      onGenerateRoute: (settings) {
+        final builder =
+            AppRouter.routes[settings.name] ??
+            AppRouter.routes[AppRouter.login]!;
+        return MaterialPageRoute(builder: builder, settings: settings);
+      },
     );
   }
 }
