@@ -1,6 +1,6 @@
 class AppStrings {
   // App
-  static const String appName = 'Matrial Disaster';
+  static const String appName = 'Store AC';
 
   // Auth
   static const String register = 'Daftar';
