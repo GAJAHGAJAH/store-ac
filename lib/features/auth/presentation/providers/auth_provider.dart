@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:matrial_1123150086_uts/core/constants/app_constants.dart';
-import 'package:matrial_1123150086_uts/core/services/dio_client.dart';
-import 'package:matrial_1123150086_uts/core/services/secure_storage.dart';
+import 'package:store_ac/core/constants/app_constants.dart';
+import 'package:store_ac/core/services/dio_client.dart';
+import 'package:store_ac/core/services/secure_storage.dart';
 
 enum AuthStatus {
   initial, // Belum ada action

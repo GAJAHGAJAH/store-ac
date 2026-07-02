@@ -1,8 +1,8 @@
 
 
-import 'package:matrial_1123150086_uts/core/constants/app_constants.dart';
-import 'package:matrial_1123150086_uts/core/services/dio_client.dart';
-import 'package:matrial_1123150086_uts/features/auth/domain/repositories/auth_repository.dart';
+import 'package:store_ac/core/constants/app_constants.dart';
+import 'package:store_ac/core/services/dio_client.dart';
+import 'package:store_ac/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   @override

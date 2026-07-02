@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:matrial_1123150086_uts/core/constants/app_colors.dart';
-import 'package:matrial_1123150086_uts/features/cart/presentation/pages/cart_page.dart';
-import 'package:matrial_1123150086_uts/features/cart/presentation/providers/cart_provider.dart';
-import 'package:matrial_1123150086_uts/features/dashboard/presentation/providers/product_provider.dart';
-import 'package:matrial_1123150086_uts/core/services/notification_service.dart';
+import 'package:store_ac/core/constants/app_colors.dart';
+import 'package:store_ac/features/cart/presentation/pages/cart_page.dart';
+import 'package:store_ac/features/cart/presentation/providers/cart_provider.dart';
+import 'package:store_ac/features/dashboard/presentation/providers/product_provider.dart';
+import 'package:store_ac/core/services/notification_service.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {

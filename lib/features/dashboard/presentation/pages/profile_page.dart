@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:matrial_1123150086_uts/core/constants/app_colors.dart';
-import 'package:matrial_1123150086_uts/core/routes/app_router.dart';
-import 'package:matrial_1123150086_uts/core/services/biometric_service.dart';
-import 'package:matrial_1123150086_uts/core/services/secure_storage.dart';
-import 'package:matrial_1123150086_uts/features/auth/presentation/providers/auth_provider.dart';
+import 'package:store_ac/core/constants/app_colors.dart';
+import 'package:store_ac/core/routes/app_router.dart';
+import 'package:store_ac/core/services/biometric_service.dart';
+import 'package:store_ac/core/services/secure_storage.dart';
+import 'package:store_ac/features/auth/presentation/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {

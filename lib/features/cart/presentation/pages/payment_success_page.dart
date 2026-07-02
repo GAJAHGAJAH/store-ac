@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:matrial_1123150086_uts/core/constants/app_colors.dart';
+import 'package:store_ac/core/constants/app_colors.dart';
 
 class PaymentSuccessPage extends StatefulWidget {
   final VoidCallback onSuccess;

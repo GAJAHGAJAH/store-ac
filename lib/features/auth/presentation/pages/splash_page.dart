@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:matrial_1123150086_uts/core/routes/app_router.dart';
-import 'package:matrial_1123150086_uts/core/services/secure_storage.dart';
+import 'package:store_ac/core/routes/app_router.dart';
+import 'package:store_ac/core/services/secure_storage.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

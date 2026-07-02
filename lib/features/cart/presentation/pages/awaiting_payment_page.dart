@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:matrial_1123150086_uts/core/constants/app_colors.dart';
-import 'package:matrial_1123150086_uts/core/constants/app_constants.dart';
-import 'package:matrial_1123150086_uts/core/services/dio_client.dart';
+import 'package:store_ac/core/constants/app_colors.dart';
+import 'package:store_ac/core/constants/app_constants.dart';
+import 'package:store_ac/core/services/dio_client.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'payment_success_page.dart';
 
