@@ -41,7 +41,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
         if (_selectedPaymentMethod == 'Wallet Ku') {
           final uri = Uri(
-            scheme: 'dompetkampus',
+            scheme: 'uangkilat',
             host: 'pay',
             queryParameters: {
               'merchant_id': 'merchant_uts_1123150086',
@@ -57,12 +57,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
             final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
             if (!launched) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Aplikasi Wallet Ku tidak ditemukan/terinstall.')),
+                const SnackBar(content: Text('Aplikasi Uang Kilat tidak ditemukan/terinstall.')),
               );
             }
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Gagal membuka Wallet Ku: Aplikasi tidak terinstall.')),
+              const SnackBar(content: Text('Gagal membuka Uang Kilat: Aplikasi tidak terinstall.')),
             );
           }
 

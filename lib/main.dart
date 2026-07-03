@@ -148,6 +148,15 @@ class _MyAppState extends State<MyApp> {
 
       debugPrint('[TokoMaterial] Pembayaran status $status: $message');
 
+      // Tampilkan SnackBar di layar aktif
+      _scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
       // Kirim Notifikasi Latar Belakang (System Notification) - Silent (Hanya masuk drawer, tidak pop-up melayang)
       NotificationService().showPaymentNotification(
         title: status == 'cancelled'
@@ -158,6 +167,14 @@ class _MyAppState extends State<MyApp> {
             : 'Transaksi $reference gagal diproses.',
         isSilent: true,
       );
+
+      // Pop dari AwaitingPaymentPage
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final state = _navigatorKey.currentState;
+        if (state != null && state.canPop()) {
+          state.pop();
+        }
+      });
     }
   }
 

@@ -395,7 +395,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Future<void> _payPendingTransaction(TransactionModel tx) async {
     final uri = Uri(
-      scheme: 'dompetkampus',
+      scheme: 'uangkilat',
       host: 'pay',
       queryParameters: {
         'merchant_id': 'merchant_uts_1123150086',
@@ -412,14 +412,14 @@ class _HistoryPageState extends State<HistoryPage> {
       if (!launched) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Aplikasi Wallet Ku tidak ditemukan/terinstall.')),
+            const SnackBar(content: Text('Aplikasi Uang Kilat tidak ditemukan/terinstall.')),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal membuka Wallet Ku: Aplikasi tidak terinstall.')),
+          const SnackBar(content: Text('Gagal membuka Uang Kilat: Aplikasi tidak terinstall.')),
         );
       }
     }

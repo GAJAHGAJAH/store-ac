@@ -58,7 +58,7 @@ class _AwaitingPaymentPageState extends State<AwaitingPaymentPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Pembayaran belum diterima. Silakan selesaikan di aplikasi Wallet Ku.'),
+            content: Text('Pembayaran belum diterima. Silakan selesaikan di aplikasi Uang Kilat.'),
             backgroundColor: Colors.orange,
           ),
         );
@@ -83,7 +83,7 @@ class _AwaitingPaymentPageState extends State<AwaitingPaymentPage> {
 
   Future<void> _relaunchWalletKu() async {
     final uri = Uri(
-      scheme: 'dompetkampus',
+      scheme: 'uangkilat',
       host: 'pay',
       queryParameters: {
         'merchant_id': 'merchant_uts_1123150086',
@@ -99,12 +99,12 @@ class _AwaitingPaymentPageState extends State<AwaitingPaymentPage> {
       final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
       if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Aplikasi Wallet Ku tidak ditemukan/terinstall.')),
+          const SnackBar(content: Text('Aplikasi Uang Kilat tidak ditemukan/terinstall.')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal membuka Wallet Ku: Aplikasi tidak terinstall.')),
+        const SnackBar(content: Text('Gagal membuka Uang Kilat: Aplikasi tidak terinstall.')),
       );
     }
   }
@@ -152,7 +152,7 @@ class _AwaitingPaymentPageState extends State<AwaitingPaymentPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Silakan selesaikan pembayaran Anda di aplikasi Wallet Ku',
+                  'Silakan selesaikan pembayaran Anda di aplikasi Uang Kilat',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -184,7 +184,7 @@ class _AwaitingPaymentPageState extends State<AwaitingPaymentPage> {
                       const Divider(height: 24),
                       _buildRow('Jumlah Bayar', 'Rp ${widget.totalAmount.toStringAsFixed(0)}'),
                       const Divider(height: 24),
-                      _buildRow('Metode Pembayaran', 'Wallet Ku (E-Money)'),
+                      _buildRow('Metode Pembayaran', 'Uang Kilat (E-Money)'),
                     ],
                   ),
                 ),
