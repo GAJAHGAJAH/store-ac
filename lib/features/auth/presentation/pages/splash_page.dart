@@ -29,7 +29,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -45,7 +45,7 @@ class _SplashPageState extends State<SplashPage> {
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.store,
                   size: 100,
-                  color: Colors.white,
+                  color: AppColors.primary,
                 ),
               ),
             ),
@@ -56,7 +56,7 @@ class _SplashPageState extends State<SplashPage> {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 letterSpacing: 1.5,
               ),
             ),
@@ -65,12 +65,12 @@ class _SplashPageState extends State<SplashPage> {
               'Belanja AC Terpercaya',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.white70,
+                color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: 48),
             const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
               strokeWidth: 2,
             ),
           ],
