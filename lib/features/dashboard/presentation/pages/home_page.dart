@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.55,
+              childAspectRatio: 0.52,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
@@ -98,21 +98,23 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(12),
-                      ),
-                      child: Image.network(
-                        p.imageUrl,
-                        height: 120,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          height: 120,
-                          color: AppColors.primaryLight.withOpacity(0.1),
-                          child: const Icon(
-                            Icons.image_not_supported,
-                            size: 40,
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(12),
+                        ),
+                        child: Image.network(
+                          p.imageUrl,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: AppColors.primaryLight.withOpacity(0.1),
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: const Icon(
+                              Icons.image_not_supported,
+                              size: 40,
+                            ),
                           ),
                         ),
                       ),

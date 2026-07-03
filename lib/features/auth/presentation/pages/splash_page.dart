@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:store_ac/core/constants/app_colors.dart';
 import 'package:store_ac/core/routes/app_router.dart';
 import 'package:store_ac/core/services/secure_storage.dart';
 
@@ -28,7 +29,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1565C0),
+      backgroundColor: AppColors.primary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:store_ac/core/constants/app_colors.dart';
 
 class AuthHeader extends StatelessWidget {
   final IconData icon;
@@ -29,13 +30,13 @@ class AuthHeader extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: (iconColor ?? const Color(0xFF1565C0)).withOpacity(0.1),
+                  color: (iconColor ?? AppColors.primary).withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
                   size: 48,
-                  color: iconColor ?? const Color(0xFF1565C0),
+                  color: iconColor ?? AppColors.primary,
                 ),
               );
             },
